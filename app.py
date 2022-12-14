@@ -329,7 +329,15 @@ app.layout = html.Div([
                     id = 'result_chart',
                             className='six columns')
             ], className='row')
-        ])
+        ]),
+        ],
+        
+        style={'background-color': '#1B4F78','opacity':'0.7'},selected_style=tab_selected_style),
+        dcc.Tab(label='Twitter Analysis', value='tab-5-example-graph',children=[
+            html.Div([
+                html.Iframe(src="https://datastudio.google.com/embed/reporting/0ef26deb-3fae-4938-aea8-0fd35d49d0ae/page/KuMAD",
+                style={"height": "800px", "width": "80%", "border":0, "frameborder":0})
+            ],style={"margin-left":200}),     
         ],style={'background-color': '#1B4F78','opacity':'0.7'},selected_style=tab_selected_style),
     ],style={
         'width': '100%',
@@ -501,7 +509,6 @@ def render_content(tab,year):
         x="Year",
         y="Cause",
         size="Total_Fire_Size",
-        # size_max=size("Total_Fire_Size"),
         color="Total_Fire_Size",
         color_continuous_scale=px.colors.sequential.Plotly3,
         title="Wildfire Cause Breakdown",
@@ -517,281 +524,291 @@ def render_content(tab,year):
         )
         return scatter
     elif tab == 'tab-4-example-graph':
-        return null
-
-
-    
-
-    
-
-
-@app.callback(Output("state", "figure"),
-                [
-                # Input("value-selected", "value"),
-                 Input("years-slider", "value")])
-
-def update_figure( year):
-    def title(text):
-        if text == "fire_size":
-            return "Wildfire "+"Acres Burned"+" by States"
-        elif text == "fire_count":
-            return "Wildfire Count "+"by States"
-        else:
-            return "FIRE"
-    if year==2021:
-        data = []
-        layout = dict(
-            title = 'US Wildfires Map',
-            # showlegend = False,
-            autosize = False,
-            width = 1300,
-            height = 900,
-            hovermode = False,
-            legend = dict(
-                x=0.7,
-                y=-0.1,
-                bgcolor="rgba(255, 255, 255, 0)",
-                font = dict( size=11 ),
-            )
+        barscene = px.bar(
+        width=500, 
+        height=500,
         )
-        years = sorted(df['FIRE_YEAR'].unique())
-        for i in range(len(years)):
-            geo_key = 'geo'+str(i+1) if i != 0 else 'geo'
-            lons = list(df[ df['FIRE_YEAR'] == years[i] ]['LONGITUDE'])
-            lats = list(df[ df['FIRE_YEAR'] == years[i] ]['LATITUDE'])
-            data.append(
-                dict(
-                    type = 'scattergeo',
-                    showlegend=False,
-                    lon = lons,
-                    lat = lats,
-                    geo = geo_key,
-                    name = str(years[i]),
-                    marker = dict(
-                        color = "rgb(255, 90, 90)",
-                        opacity = 0.5
-                    )
-                )
-            )
-
-            data.append(
-                dict(
-                    type = 'scattergeo',
-                    showlegend = False,
-                    lon = [-78],
-                    lat = [47],
-                    geo = geo_key,
-                    text = [years[i]],
-                    mode = 'text',
-                )
-            )
-            layout[geo_key] = dict(
-                scope = 'usa',
-                showland = True,
-                landcolor = 'rgb(180, 200, 229)',
-                showcountries = False,
-                domain = dict( x = [], y = [] ),
-                subunitcolor = "rgb(255, 255, 255)",
-            )
-        z = 0
-        COLS = 5
-        ROWS = 6
-        for y in reversed(range(ROWS)):
-            for x in range(COLS):
-                geo_key = 'geo'+str(z+1) if z != 0 else 'geo'
-                layout[geo_key]['domain']['x'] = [float(x)/float(COLS), float(x+1)/float(COLS)]
-                layout[geo_key]['domain']['y'] = [float(y)/float(ROWS), float(y+1)/float(ROWS)]
-                z=z+1
-                if z > 28:
-                    break
+        return barscene
+    elif tab == 'tab-5-example-graph':
+        barscene = px.bar(
+        width=500, 
+        height=500,
+        )
+        return barscene
 
 
-        return {"data": data, "layout": layout}
-    else:
-        data = []
-        layout = dict(
-            title = 'US Wildfires Map',
-            # showlegend = False,
-            autosize = True,
-            # width = 700,
-            # height = 700,
-            hovermode = False,
-            legend = dict(
-                x=0.7,
-                y=-0.1,
-                bgcolor="rgba(255, 255, 255, 0)",
-                font = dict( size=11 ),
-            ) ,
+    
+
+    
+
+
+# @app.callback(Output("state", "figure"),
+#                 [
+#                 # Input("value-selected", "value"),
+#                  Input("years-slider", "value")])
+
+# def update_figure( year):
+#     def title(text):
+#         if text == "fire_size":
+#             return "Wildfire "+"Acres Burned"+" by States"
+#         elif text == "fire_count":
+#             return "Wildfire Count "+"by States"
+#         else:
+#             return "FIRE"
+#     if year==2021:
+#         data = []
+#         layout = dict(
+#             title = 'US Wildfires Map',
+#             # showlegend = False,
+#             autosize = False,
+#             width = 1300,
+#             height = 900,
+#             hovermode = False,
+#             legend = dict(
+#                 x=0.7,
+#                 y=-0.1,
+#                 bgcolor="rgba(255, 255, 255, 0)",
+#                 font = dict( size=11 ),
+#             )
+#         )
+#         years = sorted(df['FIRE_YEAR'].unique())
+#         for i in range(len(years)):
+#             geo_key = 'geo'+str(i+1) if i != 0 else 'geo'
+#             lons = list(df[ df['FIRE_YEAR'] == years[i] ]['LONGITUDE'])
+#             lats = list(df[ df['FIRE_YEAR'] == years[i] ]['LATITUDE'])
+#             data.append(
+#                 dict(
+#                     type = 'scattergeo',
+#                     showlegend=False,
+#                     lon = lons,
+#                     lat = lats,
+#                     geo = geo_key,
+#                     name = str(years[i]),
+#                     marker = dict(
+#                         color = "rgb(255, 90, 90)",
+#                         opacity = 0.5
+#                     )
+#                 )
+#             )
+
+#             data.append(
+#                 dict(
+#                     type = 'scattergeo',
+#                     showlegend = False,
+#                     lon = [-78],
+#                     lat = [47],
+#                     geo = geo_key,
+#                     text = [years[i]],
+#                     mode = 'text',
+#                 )
+#             )
+#             layout[geo_key] = dict(
+#                 scope = 'usa',
+#                 showland = True,
+#                 landcolor = 'rgb(180, 200, 229)',
+#                 showcountries = False,
+#                 domain = dict( x = [], y = [] ),
+#                 subunitcolor = "rgb(255, 255, 255)",
+#             )
+#         z = 0
+#         COLS = 5
+#         ROWS = 6
+#         for y in reversed(range(ROWS)):
+#             for x in range(COLS):
+#                 geo_key = 'geo'+str(z+1) if z != 0 else 'geo'
+#                 layout[geo_key]['domain']['x'] = [float(x)/float(COLS), float(x+1)/float(COLS)]
+#                 layout[geo_key]['domain']['y'] = [float(y)/float(ROWS), float(y+1)/float(ROWS)]
+#                 z=z+1
+#                 if z > 28:
+#                     break
+
+
+#         return {"data": data, "layout": layout}
+#     else:
+#         data = []
+#         layout = dict(
+#             title = 'US Wildfires Map',
+#             # showlegend = False,
+#             autosize = True,
+#             # width = 700,
+#             # height = 700,
+#             hovermode = False,
+#             legend = dict(
+#                 x=0.7,
+#                 y=-0.1,
+#                 bgcolor="rgba(255, 255, 255, 0)",
+#                 font = dict( size=11 ),
+#             ) ,
                
-        )
+#         )
         
-        geo_key = 'geo'
-        lons = list(df[ df['FIRE_YEAR'] == year ]['LONGITUDE'])
-        lats = list(df[ df['FIRE_YEAR'] == year ]['LATITUDE'])
-        data.append(
-            dict(
-                type = 'scattergeo',
-                showlegend=False,
-                lon = lons,
-                lat = lats,
-                geo = geo_key,
-                name = str(year),
-                marker = dict(
-                    color = "rgb(255, 90, 90)",
-                    opacity = 0.8
-                )
-            )
-        )
+#         geo_key = 'geo'
+#         lons = list(df[ df['FIRE_YEAR'] == year ]['LONGITUDE'])
+#         lats = list(df[ df['FIRE_YEAR'] == year ]['LATITUDE'])
+#         data.append(
+#             dict(
+#                 type = 'scattergeo',
+#                 showlegend=False,
+#                 lon = lons,
+#                 lat = lats,
+#                 geo = geo_key,
+#                 name = str(year),
+#                 marker = dict(
+#                     color = "rgb(255, 90, 90)",
+#                     opacity = 0.8
+#                 )
+#             )
+#         )
 
-        data.append(
-            dict(
-                type = 'scattergeo',
-                showlegend = False,
-                lon = [-78],
-                lat = [47],
-                geo = geo_key,
-                text = [year],
-                mode = 'text',
-            )
-        )
-        layout[geo_key] = dict(
-            scope = 'usa',
-            showland = True,
-            landcolor = 'rgb(180, 200, 229)',
-            showcountries = False,
-            domain = dict( x = [], y = [] ),
-            subunitcolor = "rgb(255, 255, 255)",
-        ) 
-        layout[geo_key]['domain']['x'] = [0, 1]
-        layout[geo_key]['domain']['y'] = [0, 1]
+#         data.append(
+#             dict(
+#                 type = 'scattergeo',
+#                 showlegend = False,
+#                 lon = [-78],
+#                 lat = [47],
+#                 geo = geo_key,
+#                 text = [year],
+#                 mode = 'text',
+#             )
+#         )
+#         layout[geo_key] = dict(
+#             scope = 'usa',
+#             showland = True,
+#             landcolor = 'rgb(180, 200, 229)',
+#             showcountries = False,
+#             domain = dict( x = [], y = [] ),
+#             subunitcolor = "rgb(255, 255, 255)",
+#         ) 
+#         layout[geo_key]['domain']['x'] = [0, 1]
+#         layout[geo_key]['domain']['y'] = [0, 1]
         
 
 
-        return {"data": data, "layout": layout}
+#         return {"data": data, "layout": layout}
 
     
 
-@app.callback(
-    Output("county_choropleth", "figure"),
-    [Input("value-selected", "value"),
-     Input("years-slider", "value"),
-     Input('state', 'clickData')])
-def update_county(selected, year, clickData):
-    def title(text):
-        if text == "fire_size":
-            return "Wildfire "+"Acres Burned at "+ state_selected
-        elif text == "fire_count":
-            return "Wildfire Count at "+ state_selected
-        else:
-            return "FIRE"
+# @app.callback(
+#     Output("county_choropleth", "figure"),
+#     [Input("value-selected", "value"),
+#      Input("years-slider", "value"),
+#      Input('state', 'clickData')])
+# def update_county(selected, year, clickData):
+#     def title(text):
+#         if text == "fire_size":
+#             return "Wildfire "+"Acres Burned at "+ state_selected
+#         elif text == "fire_count":
+#             return "Wildfire Count at "+ state_selected
+#         else:
+#             return "FIRE"
 
-    county_df = df[df['state'] == 'CA']
-    state_selected = 'CA'
-    if clickData:
-        state_selected = clickData['points'][0]['text']
-        county_df = df[df['state'] == state_selected]
+#     county_df = df[df['state'] == 'CA']
+#     state_selected = 'CA'
+#     if clickData:
+#         state_selected = clickData['points'][0]['text']
+#         county_df = df[df['state'] == state_selected]
 
-    if year == 2016:
-        county = county_df.groupby(['county_fips']).sum().reset_index()[['fire_size','fire_count', 'county_fips']]
-        county_fips = county['county_fips'].to_list()
-        value = county[selected].to_list()
-    else:
-        county_year = county_df[county_df['fire_year'] == year]
-        county = county_year.groupby(['county_fips','fire_year']).sum().reset_index()
-        county_fips = county['county_fips'].to_list()
-        value = county[selected].to_list()
+#     if year == 2016:
+#         county = county_df.groupby(['county_fips']).sum().reset_index()[['fire_size','fire_count', 'county_fips']]
+#         county_fips = county['county_fips'].to_list()
+#         value = county[selected].to_list()
+#     else:
+#         county_year = county_df[county_df['fire_year'] == year]
+#         county = county_year.groupby(['county_fips','fire_year']).sum().reset_index()
+#         county_fips = county['county_fips'].to_list()
+#         value = county[selected].to_list()
 
-    if selected == 'fire_size':
-        endpts = fire_size
-    else:
-        endpts = fire_count
+#     if selected == 'fire_size':
+#         endpts = fire_size
+#     else:
+#         endpts = fire_count
 
-    figure = ff.create_choropleth(fips=county_fips,
-                                  values=value,
-                                  scope=[state_selected],
-                                  binning_endpoints=endpts, colorscale=blues,
-                                  show_state_data=True,
-                                  show_hover=True,
-                                  asp=2,
-                                  paper_bgcolor='white',
-                                  plot_bgcolor='white',
-                                  round_legend_values=True,
-                                  title_text=title(selected),
-                                  title={'yanchor': 'top', 'x': 0.5, 'y': 0.9},
-                                  county_outline={'color': 'rgb(255,255,255)', 'width': 0.1},
-                                  legend={'x': 0, 'y': 0.9},
-                                  exponent_format=True,
-                                  margin=dict(
-                                              l=50,
-                                              r=0,
-                                              b=0,
-                                              t=100,
-                                              pad=0
-                                            )
-                                 )
-    return (figure)
+#     figure = ff.create_choropleth(fips=county_fips,
+#                                   values=value,
+#                                   scope=[state_selected],
+#                                   binning_endpoints=endpts, colorscale=blues,
+#                                   show_state_data=True,
+#                                   show_hover=True,
+#                                   asp=2,
+#                                   paper_bgcolor='white',
+#                                   plot_bgcolor='white',
+#                                   round_legend_values=True,
+#                                   title_text=title(selected),
+#                                   title={'yanchor': 'top', 'x': 0.5, 'y': 0.9},
+#                                   county_outline={'color': 'rgb(255,255,255)', 'width': 0.1},
+#                                   legend={'x': 0, 'y': 0.9},
+#                                   exponent_format=True,
+#                                   margin=dict(
+#                                               l=50,
+#                                               r=0,
+#                                               b=0,
+#                                               t=100,
+#                                               pad=0
+#                                             )
+#                                  )
+#     return (figure)
 
-@app.callback(
-    dash.dependencies.Output("state_reason", "figure"),
-    [Input("metric-selected", "value"),
-     Input("reason-selected", "value"),
-     Input("years-slider", "value")])
+# @app.callback(
+#     dash.dependencies.Output("state_reason", "figure"),
+#     [Input("metric-selected", "value"),
+#      Input("reason-selected", "value"),
+#      Input("years-slider", "value")])
 
-def update_figure(selected, cause, year):
-    def title(text):
-        if text == "fire_size":
-            return "Acres Burned"
-        elif text == "fire_count":
-            return "Wildfire Count"
-        else:
-            return "FIRE"
+# def update_figure(selected, cause, year):
+#     def title(text):
+#         if text == "fire_size":
+#             return "Acres Burned"
+#         elif text == "fire_count":
+#             return "Wildfire Count"
+#         else:
+#             return "FIRE"
 
-    barscene = px.bar(
-        df_states,
-        x=df_states["Total_Number_of_Fires"],
-        y=df_states["STATE"].unique(),
-        labels={"x": "Total_Number_of_Fires", "y": "States"},
-        color=df_states["Total_Number_of_Fires"],
-        color_continuous_scale=px.colors.sequential.Sunset,
-        # color_discrete_sequence=['rgb(253,180,98)','rgb(190,186,218)'],
-        # text=df_states["Total_Number_of_Fires"],
-        title="Total Number of Fires by States",
-        # ,barmode = 'group'
-        orientation="h",
-    )
-    barscene.update_layout(title=dict(x=0.5), paper_bgcolor="rgb(203,213,232)",)
-    # barscene.update_traces(texttemplate="%{text:.2s}")
-    return barscene
+#     barscene = px.bar(
+#         df_states,
+#         x=df_states["Total_Number_of_Fires"],
+#         y=df_states["STATE"].unique(),
+#         labels={"x": "Total_Number_of_Fires", "y": "States"},
+#         color=df_states["Total_Number_of_Fires"],
+#         color_continuous_scale=px.colors.sequential.Sunset,
+#         # color_discrete_sequence=['rgb(253,180,98)','rgb(190,186,218)'],
+#         # text=df_states["Total_Number_of_Fires"],
+#         title="Total Number of Fires by States",
+#         # ,barmode = 'group'
+#         orientation="h",
+#     )
+#     barscene.update_layout(title=dict(x=0.5), paper_bgcolor="rgb(203,213,232)",)
+#     # barscene.update_traces(texttemplate="%{text:.2s}")
+#     return barscene
 
-@app.callback(
-    dash.dependencies.Output("cause_breakdown", "figure"),
-    [Input("metric-selected", "value"),
-     Input('state_reason', 'clickData')
-     ])
+# @app.callback(
+#     dash.dependencies.Output("cause_breakdown", "figure"),
+#     [Input("metric-selected", "value"),
+#      Input('state_reason', 'clickData')
+#      ])
 
-def update_figure(selected, clickData):
-    def size(text):
-        if text == "fire_size":
-            return 60
-        elif text == "fire_count":
-            return 20
-        else:
-            return 20
+# def update_figure(selected, clickData):
+#     def size(text):
+#         if text == "fire_size":
+#             return 60
+#         elif text == "fire_count":
+#             return 20
+#         else:
+#             return 20
 
-    def chart_title(text):
-        if text == "fire_size":
-            return "Acres Burned"
-        elif text == "fire_count":
-            return "Wildfire Count"
-        else:
-            return "FIRE"
-    def title(text):
-        if text == "fire_size" and clickData:
-            return 'Wildfire Acres Burned at ' + state_selected
-        elif text == "fire_count" and clickData:
-            return 'Wildfire Count at ' + state_selected
-        else:
-            return 'Wildfire ' + chart_title(selected)
+#     def chart_title(text):
+#         if text == "fire_size":
+#             return "Acres Burned"
+#         elif text == "fire_count":
+#             return "Wildfire Count"
+#         else:
+#             return "FIRE"
+#     def title(text):
+#         if text == "fire_size" and clickData:
+#             return 'Wildfire Acres Burned at ' + state_selected
+#         elif text == "fire_count" and clickData:
+#             return 'Wildfire Count at ' + state_selected
+#         else:
+#             return 'Wildfire ' + chart_title(selected)
 
     # state_df = df.groupby(['state','stat_cause_descr','fire_year']).sum().reset_index()
     # # state_selected = 'CA'
@@ -814,71 +831,72 @@ def update_figure(selected, clickData):
     #                          color_discrete_sequence=G10).for_each_trace(lambda t: t.update(name=''))
 
     # return (fig)
-    scatter = px.scatter(
-        df_cause,
-        x="Year",
-        y="Cause",
-        size="Total_Fire_Size",
-        size_max=size("Total_Fire_Size"),
-        color="Total_Fire_Size",
-        color_continuous_scale=px.colors.sequential.Plotly3,
-        # color_continuous_scale=px.colors.sequential.Sunset,
-        title="Wildfire Cause Breakdown",
-        # color_discrete_sequence=G10
-        ).for_each_trace(lambda t: t.update(name=''))
+#     scatter = px.scatter(
+#         df_cause,
+#         x="Year",
+#         y="Cause",
+#         size="Total_Fire_Size",
+#         size_max=size("Total_Fire_Size"),
+#         color="Total_Fire_Size",
+#         color_continuous_scale=px.colors.sequential.Plotly3,
+#         # color_continuous_scale=px.colors.sequential.Sunset,
+#         title="Wildfire Cause Breakdown",
+#         # color_discrete_sequence=G10
+#         ).for_each_trace(lambda t: t.update(name=''))
         
     
-    scatter.update_layout(
-        xaxis_tickangle=30,
-        title=dict(x=0.5),
-        xaxis_tickfont=dict(size=9),
-        yaxis_tickfont=dict(size=9),
-        margin=dict(l=100, r=100, t=50, b=20),
-        paper_bgcolor="rgb(203,213,232)",
-    )
-    return scatter 
+#     scatter.update_layout(
+#         xaxis_tickangle=30,
+#         title=dict(x=0.5),
+#         xaxis_tickfont=dict(size=9),
+#         yaxis_tickfont=dict(size=9),
+#         margin=dict(l=100, r=100, t=50, b=20),
+#         paper_bgcolor="rgb(203,213,232)",
+#     )
+#     return scatter 
 
-@app.callback(Output("result_chart", "figure"),
-              [Input('button', 'n_clicks')],
-              [State("lat", "value"),
-               State("lon", "value"),
-            #    State("drought-slider", "value"),
-               State("model-selected", "value"),
-               State("date-picker-single", "date")])
+# @app.callback(Output("result_chart", "figure"),
+#               [Input('button', 'n_clicks')],
+#               [State("lat", "value"),
+#                State("lon", "value"),
+#             #    State("drought-slider", "value"),
+#                State("model-selected", "value"),
+#                State("date-picker-single", "date")])
 
-def update_figure(n_clicks, lat, lon, model, date):
+# def update_figure(n_clicks, lat, lon, model, date):
 
-    year = int(date.split(' ')[0][:4])
-    month = int(date.split(' ')[0][5:7])
-    # drought_input = float(drought * 20)
-    lat = 40.967200
-    lon = -117.784200
+#     year = int(date.split(' ')[0][:4])
+#     month = int(date.split(' ')[0][5:7])
+#     # drought_input = float(drought * 20)
+#     lat = 40.967200
+#     lon = -117.784200
 
-    x = [[year, lat, lon, 14, '07033', 0.2, month,6]]
+#     x = [[year, lat, lon, 14, '07033', 0.2, month,6]]
 
-    if model == 'RF':
-        y_pred = rf_joblib.predict(x)
-    # elif model == 'GBRT':
-    #     y_pred = gbrt_smote.predict(y_test)
+#     if model == 'RF':
+#         y_pred = rf_joblib.predict(x)
+#     # elif model == 'GBRT':
+#     #     y_pred = gbrt_smote.predict(y_test)
 
-    # cause_test = [[lat, lon, month, year, drought_input, y_pred[0]]]
-    # cause_pred = rf_cause.predict(cause_test)
+#     # cause_test = [[lat, lon, month, year, drought_input, y_pred[0]]]
+#     # cause_pred = rf_cause.predict(cause_test)
 
-    # params = {'lat': lat,
-    #           'lon': lon}
-    # response_area = requests.get('https://geo.fcc.gov/api/census/area', params=params)
-    # county_fips = response_area.json()['results'][0]['county_fips']
+#     # params = {'lat': lat,
+#     #           'lon': lon}
+#     # response_area = requests.get('https://geo.fcc.gov/api/census/area', params=params)
+#     # county_fips = response_area.json()['results'][0]['county_fips']
 
-    # econ_dmg = int(econ_impact[econ_impact['fips'] == int(county_fips)]['economic_damage'])
+#     # econ_dmg = int(econ_impact[econ_impact['fips'] == int(county_fips)]['economic_damage'])
 
-    trace = go.Bar(x=results, y=[y_pred[0]])
-    return {"data": [trace],
-            "layout": go.Layout(title={'text': 'Prediction', 'yanchor': 'top', 'x': 0.5, 'y': 1},
-                                paper_bgcolor='white',
-                                plot_bgcolor='white',
-                                yaxis={'tickvals': [1, 2, 3]}
-                                )
-            }
+#     trace = go.Bar(x=results, y=[y_pred[0]])
+#     return {"data": [trace],
+#             "layout": go.Layout(title={'text': 'Prediction', 'yanchor': 'top', 'x': 0.5, 'y': 1},
+#                                 paper_bgcolor='white',
+#                                 plot_bgcolor='white',
+#                                 yaxis={'tickvals': [1, 2, 3]}
+#                                 )
+#             }
 
 if __name__ == '__main__':
     app.run_server(debug=True)
+
